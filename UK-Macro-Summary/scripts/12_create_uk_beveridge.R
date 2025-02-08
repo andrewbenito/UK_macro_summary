@@ -91,7 +91,7 @@ df[['dv_u']] <- df[['dv_u']] |>
 beveridge.plot <- ggplot(df[['uv']], 
        aes(x=ur, y=vr, color = dateLabelShort, shape=dateLabelShort))  +
   geom_point(size=1.75) +
-  theme(legend.position = "right") +
+  theme(legend.position = "bottom") +
   geom_smooth(method = "lm", linewidth=1.65, se = F) +
   geom_text_repel(aes(label=dateLabel, size=1.75)) +
   scale_color_jco() +

@@ -3,7 +3,9 @@ title: |
    | UK Macro:
    | A view from financial markets 
 author: Andrew Benito
-date: '`r format(Sys.Date(), "%B %d, %Y")`'
+date: 'January 29, 2025'
+#date: '`r format(Sys.Date(), "%B %d, %Y")`'
+institute: "Presentation at King's College London"
 date-format: long
 execute: 
   echo: false
@@ -21,10 +23,10 @@ format:
 rm(list = ls())
 lapply(c('knitr', 'here', 'tidyverse', 'openxlsx', 'tsbox', 'Rblpapi', 'data.table', 'ggtext',
          'MacrobondAPI', 'ggsci', 'patchwork', 'ggbeeswarm', 'sysfonts', 'readxl', 'gt', 'gtExtras',
-         'kableExtra', 'showtext', 'hrbrthemes', 'janitor',
+         'kableExtra', 'showtext', 'hrbrthemes', 'janitor', 'ggrepel',
          'hablar', 'Rblpapi'),
        require, character.only = TRUE)
-here::here()
+knitr::opts_knit$set(root.dir = here::here())
 import_roboto_condensed()
 blpConnect() 
 options(warn = -1)
@@ -43,7 +45,6 @@ knitr::opts_chunk$set(
 )
 
 ```
-
 
 # Key Questions
 
@@ -65,8 +66,8 @@ p1
 ```
 
 
-- QT to date reverses the GBP150bn QE decision [Nov 2020], in terms of BoE Gilts held.
-- Start of rate hiking cycle delayed by the 12m and pre-announced QE programme.
+- Current rate-cutting cycle follows MPC's sharpest rate-hiking cycle.  
+- QT has reversed add'l Gilts held from the GBP150bn QE decision [Nov 2020].  
 
 # Evolving forms of Monetary Policy
 
@@ -74,28 +75,29 @@ p1
 source(here('scripts','02_mon_pol_shocks.R'))
 p1
 ```
+- Managing market expectations - medium-term path for monetary policy has a stronger and more prolonged effect on inflation.  
 
 
 # Evolving Market expectations
 
 ```{r, include=TRUE}
 source(here('scripts','03_OIS_curves.R'))
-ois1
+ois1 
 
 ```
-- Learning about hard-to-learn features of the economy (eg productivity and 'trend' growth) can be slow (Farmer *et al*, 2024).
-
+- Hard-to-learn features, eg productivity growth and r-star.  
 
 # Zooming in... the past year
 
 ```{r, include=TRUE}
-ois2
+ois2 
 
 ```
-- Expected rate cuts have moderated... despite faster than expected disinflation in the past year.
+
+- Expected rate cuts have moderated, coinciding with US election, UK fiscal news and upward revisions to UK infl outlook.
 
 
-# An evolving inflation outlook?
+# An Evolving Inflation Outlook?
 
 ```{r, warning=FALSE}
 source(here('scripts','04_BoE_forecasts.R'))
@@ -112,6 +114,15 @@ infl.forecasts
 ```
 - Policy framework broadly robust to its largest inflation shock.
 
+# More recent disinflation news
+
+```{r}
+infl.forecasts.latest
+
+```
+
+- Some of the faster-than-expected disinflation of the past year is judged to be temporary. Inflation forecasts now evolving higher.
+
 
 # The pattern of BoE forecast errors
 
@@ -122,18 +133,18 @@ p3+p4+p5
 - Pattern of forecast errors points to repeated, negative supply shocks. (CPI: higher-than-expected; U: lower-than-expected; GDP: unbiased).
 
 
-# GDP Growth -- Evolving expectations and out-turns
 
-```{r, include=TRUE, echo=FALSE, warning=FALSE}
+# Growth agenda -- Evolving expectations and out-turns
 
-source(here('scripts','05_tracking_consensus_gdp.R'))
-track.cons.plot
+```{r, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+path <- here('scripts', '05b_tracking_consensus_gdp.R')
+source(path)
+plt
 
 ```
 
-- Medium-term growth: innovation and reallocation dominate capital deepening.
-
-
+- Medium-term growth: innovation and reallocation effects dominate capital deepening.
+- Is weak private investment a consequence rather than a cause of weak TFP and GDP growth? Easing planning rules can help.  
 
 
 # Household real incomes
@@ -143,7 +154,7 @@ source(here('scripts','06_create_data_hh_income.R'))
 rdi.plot
 
 ```
-
+- The drag from elevated inflation and interest paid subsiding; household taxes a steady/persistent drag since 2023.
 
 
 # Sterling asset prices
@@ -155,46 +166,29 @@ assets.plot
 
 ```
 
-- Aim: distinguish sources of news: (i) UK macro (ii) BoE Monetary policy news (iii) US macro (iv) Fed policy and (v) Risk-on.
+- Aim: distinguish sources of news: (i) UK macro (ii) BoE Monetary policy news (iii) US macro (iv) Fed policy and (v) 'Risk-on'.
 
 
-# Decomposing changes in asset prices into macro
+# Decomposing changes in asset prices into macro 
 
 
-```{r include-image, echo=FALSE, fig.align='center'}
-knitr::include_graphics(here("plots", "1.GBP-OIS10y.png"))
+```{r, include=TRUE, echo=FALSE, fig.align="center"}
+here("plots", "1.GBP-OIS10y.png") %>%
+    knitr::include_graphics(error = F)
+
 ```
-
 
 - Results from a Bayesian VAR estimated under sign restrictions on daily, financial market data.
 - OIS higher on US spillovers.
 
-# Domestic inflation and the labour market
-
-
-- A restrictive monetary stance takes time (~2y) to moderate wage growth and core inflation with some cyclical improvement in labour productivity and profits.
-
-
-
-# Worsening fiscal arithmetic: a public debt ratchet
-
-```{r, include=TRUE}
-# Public sector debt
-source(here('scripts','08_fiscal_main.R'))
-debt.lt.plot
-
-```
-
--	One-off Supply shocks should be met with *higher* Public Debt, worked-off gradually.  
-- Yet: r\uparrow, g\downarrow  imply a *lower* optimal Debt/GDP ratio.
-
 
 # Public spending shouldered by bond-holders + tax-payers
 ```{r, include=TRUE}
+source(here('scripts','08_fiscal_main.R'))
 spend.lt.plot
 
 ```
-- The bond market understands that politicians can be inclined towards making Bond-holders, not Tax-payers, shoulder Public spending.
+- The bond market recognises that politicians can be inclined towards making Bond-holders, not Tax-payers, shoulder Public spending.
 
 
 # Debt Issuance approaching its limits?
@@ -204,7 +198,7 @@ dmo.remit
 ```
 
 
-# Truss vs Reeves: financial markets' assessment
+# Truss vs Reeves: financial markets' (15day) assessment
 
 ```{r}
 source(here('scripts','10_truss_reeves.R'))
@@ -212,18 +206,52 @@ a.plot / b.plot
 
 ```
 - **Truss**: a loss of (foreign) **investor confidence**, exacerbated by long-term investors (LDI). BoE interventions stabilised. 
-- **Reeves**: a more standard injection of **aggregate Demand**, met with higher ST interest-rates. A subsequent deterioration in aggregate Supply?
+- **Reeves**: a more standard injection of **aggregate Demand**, met with higher ST interest-rates. A subsequent deterioration in aggregate Supply or Risk premium?
 
 
-# Asymmetric fiscal choices ?
+# Bouts of risk premium
+
+```{r}
+correl.plot
+
+```
+
+- Instability reflects time-varying roles for different shocks.  
+- 'normal' $\rho>0$ consistent with Demand news pushing Yields and Currency in same direction. Risk premium => opposing directions and $\rho<0$. 
+- Reeves episode a much smaller and more temporary bout of risk premium than Truss mini-Budget. 
+
+
+# Worsening fiscal arithmetic: a public debt ratchet
+
+```{r, include=TRUE}
+# Public sector debt
+debt.lt.plot
+
+```
+
+-	One-off Supply shocks should be met with *higher* Public Debt, worked-off gradually.  
+- Yet: r\uparrow, g\downarrow  imply a *lower* optimal Debt/GDP ratio.
+
+
+# Fiscal choices based on Macro news
 
 ```{r}
 source(here('scripts','08d_fiscal_choices.R'))
 responses.scatter
 
 ```
-- Spending proceeds of good news rather than 'paying-down' debt in good times, despite ratchet higher in Debt/GDP. 
-- Estimates of 'Headroom' (vs. loosened fiscal targets) are small.
+- Spending some of proceeds of good news rather than 'paying-down' debt. Oct'24 Budget loose relative to that pattern.  
+- Fiscal policy tightened at only 2 out of 21 fiscal events since 2015. Estimates of 'Headroom' small.  
+
+# A plan to restore Fiscal Space? No.
+
+```{r}
+source(here('scripts','10_debt_stab_pri_bal.R'))
+gt.dat
+
+```
+
+- A plan to stabilise Net Financial Liabilities does not (i) allow for more negative supply shocks or (ii) restore fiscal space.
 
 
 # r\uparrow, g\downarrow
@@ -235,6 +263,20 @@ interest.plot + prody.plot
 
 ```
 
+- +50bp on market interest rates adds £10bn to public borrowing in 5Y.
+- -1% from level of productivity adds c.£10bn to public borrowing in 5Y.
+
+
+# Estimates of neutral rates drifting higher
+
+```{r}
+source(here('scripts','10_maps_rstar.R'))
+maps.r.plot
+
+```
+
+- Risk of US fiscal policy pushing up on global neutral rates (r*).  
+- If Output gap>0 and Disinflation stalling, 'r' is closer to 'r*' or neutral than thought.  
 
 # g\downarrow and y* may be lower than thought
 
@@ -253,7 +295,7 @@ beveridge.plot
 
 ```
 
-- pre-Covid vs. latest U/V curve suggests an outward shift.
+- Pre-Covid vs. latest U/V curve suggests an outward shift in U*. Sticky wage growth is another symptom. 
 
 # Rising unemployment
 
@@ -262,31 +304,28 @@ dv_u + rec_ds
 
 ```
 - Risk: U*\uparrow  is mis-interpreted as a cyclical effect.
-- Would imply some additional inflationary pressure, pushing up on 'r' over time.
+- Would imply some additional inflationary pressure, keeping 'r' higher than otherwise.
 
 
 # What have we learned?
 
-- **Learning** how the data are evolving, while still **reassessing the starting point** + what we thought we could take as given.   
+- **Learning** about how the economy is evolving, while still **reassessing the starting point** of what we thought we cld take as given.   
 
-- **Bayesians**: learning is continuous. But sometimes we have to unlearn something, previously taken as given. Imagine: jumping to a different branch of a decision tree.
+- **Bayesians**: learning is continuous. But might we have to 'unlearn' something, previously taken as given? Imagine: jumping to a different branch of a decision tree.
 
-- **Policy**: needing to reassess the starting point is the origin of big policy mistakes. In **Markets**: opportunities from these discontinuities (a la *Big Short*). 
+- **Policy**: the misdiagnosed 'starting point' origin of large policy mistakes. In **Markets**: opportunities from these discontinuities (a la *Big Short*). 
 
 - *UK Examples*: (i) BoE underestimating a positive output gap, post-Covid in 2022, with 'incrementalism' since then. (ii) BoE and markets assuming unrealistic fiscal tightening in 2024H1. Forward curves drift higher since then.
 
 
-
 # Conclusions
 
-**How is the UK economy evolving?** Ongoing disinflation, depends on a restrictive monetary policy stance.   
+**How is the UK economy evolving?** Disinflation that still depends on a restrictive monetary policy stance. Supply-side constrains GDP growth.    
 
-**How is the UK policy mix evolving?** Withdrawal of monetary restriction and fiscal support slower than thought a year ago. Fiscal policy as a driver.
+**How is the UK policy mix evolving?** Withdrawal of both monetary restriction and fiscal support slower than expected a year ago. Fiscal policy as a driver of Monetary policy outlook, as well as Global news.
 
 **Where might we be going badly wrong?**  
 - Both Debt sustainability and Inflation persistence are sensitive to over-stating supply capacity and its trend.  
-- Excess demand if improved terms of trade and labour supply boost Demand more quickly than Supply;  more so, if this is mis-diagnosed as a boost to Supply, as U rises (for structural reasons).   
-- **Risks**: If consumers already discount fiscal consolidation, while monetary policy eases (Hawkish)? And/or, has transmission of past monetary tightening been delayed (Dovish)?
-
-
+- Added risk that higher U is mis-diagnosed as slack (U-U\*) when it owes to higher structural U*. Bouts of risk premium.  
+- Cyclical: Consumers may discount fiscal consolidation, while mon pol eases (Hawkish/Infl). Or, transmission of past monetary tightening delayed (Dovish/Growth at risk).
 

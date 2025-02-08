@@ -35,7 +35,7 @@ interest.plot <- ggplot(interest.dat,
   geom_line(data=filter(interest.dat, official_forecast %in% "2024-10-01"), color="navy", size=1.25) + 
   geom_vline(xintercept = 2024, lty = 4) +
   labs(title = "Debt Interest Costs",
-       subtitle = "Evolution of Fiscal forecasts, incl October 2024 Budget",
+       subtitle = "Successive OBR forecasts",
        y = "£bn",
        caption = "Source: OBR")
 interest.plot
@@ -54,9 +54,8 @@ prody.plot <- ggplot(prody.dat,
   geom_vline(xintercept = 2024, lty = 4) +
   geom_hline(yintercept = 0.0, lty=4) +
   labs(title = "Labour Productivity forecasts",
-       subtitle = "Evolution of Fiscal forecasts, incl October 2024 Budget",
+       subtitle = "Successive OBR forecasts",
        y = "%yoy",
        caption = "Source: OBR")
 prody.plot
-
 

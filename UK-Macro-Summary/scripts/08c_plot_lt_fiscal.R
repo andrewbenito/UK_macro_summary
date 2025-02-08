@@ -31,6 +31,42 @@ debt.lt.plot <- fiscal.hist.db$agg  |>
        color = NULL)
 #debt.lt.plot
 
+# From 1950
+debt.lt.plot1950 <- fiscal.hist.db$agg  |> 
+  dplyr::select(year, contains("public_sector_net")) |> 
+  dplyr::filter(year>=1950) |> 
+  ggplot(aes(x=year)) + 
+  geom_col(aes(y = public_sector_net_borrowing_psnb_, fill = "Borrowing")) + 
+  geom_line(aes(y = public_sector_net_debt_psnd_ / 10, color = "Debt"), linewidth=1.4) + 
+  scale_fill_manual(values = c("Borrowing" = "darkblue")) +
+  scale_color_manual(values = c("Debt" = "red")) +
+  scale_y_continuous(
+    name = "Borrowing (% GDP)",
+    sec.axis = sec_axis(transform = ~.*10, name = "Debt (% GDP)")
+  ) +
+  scale_x_continuous(
+    breaks = seq(1700, max(fiscal.hist.db$agg$year, na.rm = TRUE), by = 25),
+    name = "Date"
+  ) +
+  labs(x = "Date", y ="% GDP",
+       title = "UK Public Debt and Borrowing since 1950",
+       caption = "Source: OBR",
+       fill = NULL,
+       color = NULL)
+#debt.lt.plot1950
+
+# Average Debt/GDP in MPC's 1997-2007
+fiscal.hist.db$agg |> 
+  dplyr::filter(year>=1950) |> 
+  dplyr::filter(year>=1997 & year <=2007) |> 
+  summarise(avg = mean(public_sector_net_debt_psnd_, na.rm = TRUE))
+
+fiscal.hist.db$agg |> 
+  dplyr::filter(year==last(year)) |> 
+  summarise(avg = mean(public_sector_net_debt_psnd_, na.rm = TRUE))
+
+
+
 # Public sector spending since 1700
 # where is health?
 spend.lt.plot <- fiscal.hist.db[['spending']] |> 

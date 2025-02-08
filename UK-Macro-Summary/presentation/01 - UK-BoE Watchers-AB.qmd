@@ -1,0 +1,201 @@
+---
+title: |
+   | BoE Watchers:
+   | On monetary and fiscal policy interactions 
+author: Andrew Benito
+date: 'May 12, 2025'
+#date: '`r format(Sys.Date(), "%B %d, %Y")`'
+institute: "Eisler Capital"
+date-format: long
+execute: 
+  echo: false
+  output: asis
+format: 
+  beamer: 
+    navigation: horizontal
+    header-includes: |
+       \setbeamertemplate{navigation symbols}{}
+       \setbeamertemplate{footline}[page number]
+---
+
+```{r, include=FALSE, echo=FALSE}
+# Packages----
+rm(list = ls())
+lapply(c('knitr', 'here', 'tidyverse', 'openxlsx', 'tsbox', 'Rblpapi', 'data.table', 'ggtext',
+         'MacrobondAPI', 'ggsci', 'patchwork', 'ggbeeswarm', 'sysfonts', 'readxl', 'gt', 'gtExtras',
+         'kableExtra', 'showtext', 'hrbrthemes', 'janitor', 'ggrepel', 'glue',
+         'hablar', 'Rblpapi'),
+       require, character.only = TRUE)
+knitr::opts_knit$set(root.dir = here::here())
+import_roboto_condensed()
+blpConnect() 
+options(warn = -1)
+
+# Source Functions
+source(here('functions','chartFormat.R'))
+source(here('functions','functions.R'))
+
+# Options----
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE,
+	fig.width=20, fig.height=10,
+	dev = "cairo_pdf"
+)
+
+```
+
+
+# Main messages
+
+- **Markets**: risk premium episodes suggest the UK's fiscal buffer is uncomfortably small.
+- **Macro**: (i) a need to restore fiscal space (ii) the UK output gap is still positive (iii) recent falls in Employment partly come from the Supply-side. 
+
+MPC again risks having under-estimated 'starting point' Output gap and role of Supply in recent economic weakness.
+
+These point to an improved **policy mix** that would incorporate add'l **fiscal consolidation**. Whether **monetary policy** eases by more depends on where that would leave the Output gap overall, Inflation persistence and the incidence of Risk premium episodes. 
+ 
+
+# A public debt ratchet and an expanded BoE balance sheet
+
+```{r, include=TRUE}
+# Public sector debt
+source(here('scripts','08_fiscal_main.R'))
+source(here('scripts','01_BoE_settings.R'))
+
+debt.lt.plot1950 + p1
+
+```
+
+- Debt to GDP triple its average in MPC's first decade.  
+- QE shortened the effective maturity of Public liabilities.  
+
+# r\uparrow, g\downarrow
+
+```{r}
+# Evolving int rate costs and productivity
+source(here('scripts','08e_historical_forecasts.R'))
+interest.plot + prody.plot
+
+```
+
+- +50bp on market interest rates now adds £10bn to public borrowing in 5Y.
+
+
+# Revisions in market expectations of 'r'   
+
+```{r, include=TRUE}
+source(here('scripts','03_OIS_curves.R'))
+ois1 
+
+```
+- Hard-to-learn features, eg r-star and trend productivity growth (Leland _et al_, 2024).  
+
+
+# Stabilising debt, then restoring Fiscal Space?
+
+```{r}
+source(here('scripts','10_debt_stab_pri_bal.R'))
+gt.dat
+
+```
+
+
+# Estimates of neutral rates drifting higher
+
+```{r}
+source(here('scripts','10_maps_rstar.R'))
+maps.r.plot
+ggsave(here::here('output', 'maps-r-star.png'), plot = maps.r.plot, width = 9, height = 5, dpi = 110, units = "in", device='png')
+
+```
+
+- If Output gap>0 (and Disinflation stalling), 'r' is closer to 'r*' than previously thought. 
+
+
+# y* may be lower than thought, incl on U*\uparrow
+
+```{r, include=TRUE, echo=FALSE, message=FALSE}
+source(here('scripts','11_create_data_output_gap.R'))
+source(here('scripts','12_create_uk_beveridge.R'))
+og.plot + beveridge.plot
+
+```
+
+- Latest U/V curve suggests an outward shift in U* vs. pre-Covid. Sticky wage growth another symptom.
+
+
+# The pattern of BoE forecast errors
+
+```{r}
+source(here('scripts','04_BoE_forecasts.R'))
+p3+p4+p5
+
+```
+- Pattern points to repeated, negative supply shocks under-estimated by BoE. (CPI: higher-than-expected; U: lower-than-expected; GDP: unbiased).
+
+
+# Bouts of Sterling risk premium
+
+```{r}
+source(here('scripts','07_asset_prices.R'))
+correl.plot
+
+```
+
+- Instability reflects time-varying roles for different shocks.  
+- 'normal' $\rho>0$ consistent with Demand news pushing Yields and Currency in same direction. Risk premium news => opposing directions and $\rho<0$. 
+- Cx Reeves episode a much smaller and more temporary bout of risk premium than Truss mini-Budget. 
+
+
+# Some quantification of Risk premium vs. Demand effects
+
+<!-- ```{r} -->
+<!-- 3-variable SVAR -->
+
+<!-- ``` -->
+
+
+# Risk premium complicates predictable MPC Comms 
+
+```{r}
+source(here('scripts','10_truss_january.R'))
+a.plot + b.plot
+
+```
+
+
+# Fiscal reactions to macro news. More fiscal consolidation?
+
+```{r}
+source(here('scripts','08d_fiscal_choices.R'))
+responses.scatter
+
+```
+- Fiscal policy tightened at 2 out of 21 fiscal events since 2015.  
+- A quicker pace of consolidation to recognise a still positive Output Gap and provide a larger buffer against risk premium.
+
+
+
+# How MPC interprets company responses to higher payroll taxes. 
+
+```{r}
+# Chart of DMP survey
+source(here('scripts','12_DMP_response_taxes.R'))
+responses.bar
+
+```
+
+- Employment cuts owe to weaker Supply-side, as much as aggregate Demand, and $U*\uparrow$.  
+
+
+# Conclusions
+
+- **Markets**: risk premium episodes suggest the UK's fiscal buffer is uncomfortably small.
+- **Macro**: (i) a need to restore fiscal space (ii) the UK Output gap is still positive (iii) recent falls in Employment partly come from the Supply-side. 
+
+MPC again risks having under-estimated 'starting point' Output gap and role of Supply in recent economic weakness.
+
+These point to an improved **policy mix** that would incorporate add'l **fiscal consolidation**. Whether **monetary policy** eases by more depends on where that would leave the output gap overall, inflation persistence and the incidence of risk premium episodes.
+

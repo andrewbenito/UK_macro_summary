@@ -48,3 +48,17 @@ p1 <- ggplot(event.factors) +
        subtitle = "Monetary policy factors, at each MPC announcement event",
        caption = "Source: UK Monetary Policy Event Study Database (UKMPD)") +
   theme(legend.position = "none")
+
+# Zooming in - recent past
+datecusp <- as.Date('2020-01-01')
+datecuspY <- year(datecusp)
+
+p2 <- ggplot(filter(event.factors, date>=datecusp)) +
+  geom_col(aes(x=date, y =effect, color = monetary_factor)) +
+  facet_wrap(~monetary_factor) +
+  labs(y = "effect, pp",
+       title = glue::glue("Monetary policy factors since {datecuspY}"),
+       caption = "Source: UK Monetary Policy Event Study Database (UKMPD)") +
+  theme(legend.position = "none")
+
+

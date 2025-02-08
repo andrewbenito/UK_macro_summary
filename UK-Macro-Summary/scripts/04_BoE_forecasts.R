@@ -256,6 +256,21 @@ infl.forecasts <- ggplot(data1, aes(x=dateyq, y=`Mean`, group=reportDate, color 
        subtitle = "CPI Inflation",
        x="Date", y="BoE CPI Inflation forecast, %yoy")
 
+# Latest set of Inflation Forecasts (latest 5 Reports)
+infl.forecasts.latest <- ggplot(subset(data1, reportDate>=last(reportDate) %m-% months(5*3))) + 
+  geom_line(aes(x=dateyq, y=`Mean`, group=reportDate, color = reportDate)) +
+  geom_point(
+    data = subset(data1, reportDate == last(reportDate)),  # Filter points for latest reportDate
+    aes(x = dateyq, y = `Mean`),
+    color = "blue",
+    size = 3) +
+  geom_hline(yintercept = 2.0, lty=4) +
+  theme(legend.position = "none") +
+  labs(color=NULL, 
+       subtitle = "CPI Inflation",
+       x="Date", y="BoE CPI Inflation forecast, %yoy")
+
+
 # FIG: Forecast News UNEMPLOYMENT
 unemp.forecasts <- ggplot(data3, aes(x=dateyq, y=Mean, group=reportDate, color = reportDate)) + 
   geom_line() + 

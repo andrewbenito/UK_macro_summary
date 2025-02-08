@@ -91,10 +91,11 @@ comp.date <- last(fwcv$date) %m-% months(12)
 
 ois2 <- ggplot(subset(fwcv, date>=as.Date(comp.date)), aes(x=date2, y = yield, group = date)) +
   geom_line(aes(colour = as.factor(date)), linewidth=1.4) + 
+  geom_point(data = subset(fwcv, date == last(date)), aes(x = date2, y = yield), color = "blue", size = 3) + 
   geom_line(aes(y=bankrate), linewidth=1.25) +
   theme(legend.position = "none") + 
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") + 
-  labs(title = "Bank Rate and GBP OIS Curves: The past 12 months", 
+  labs(title = "GBP OIS Curves: The past 12 months", 
        subtitle = "monthly averages of end-of-day daily data",
        x = "date", y = "rate %",
        caption = "Source: Bank of England data")

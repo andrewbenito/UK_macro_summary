@@ -5,7 +5,7 @@ forecast.prep <- function(fcast_series, outturn, start_year="2023", P=FALSE)
   fcast_dates <- c()
   fcast_dates_names <- c()
   quarters <- c('Q1', 'Q2', 'Q3', 'Q4')
-  for (y in as.numeric(start_year):(year(Sys.Date())+1)) {
+  for (y in as.numeric(start_year):(year(Sys.Date()))) {
     for (q in 1:4) {
       fcast_dates[length(fcast_dates)+1] <- paste(quarters[q], substr(as.character(y),3,4), sep="")
       fcast_dates_names[length(fcast_dates_names)+1] <- paste(quarters[q], substr(as.character(y),3,4), sep=":")
@@ -172,14 +172,24 @@ forecast.plot <- function(l, P=FALSE, series_name="Real GDP Growth (%qoq)", y_la
   fcast_jitter[gap3 & !three,dim(fcast_jitter)[2]] <- fcast_jitter[gap3 & !three,dim(fcast_jitter)[2]] + by[gap3 & !three]
   
   # Transfor data and graph
-  fcast_trans <- melt(fcast_jitter, id = "date") 
-  plt <- ggplot() + 
-    geom_line(fcast_trans, mapping=aes(x=date, y=value, color=variable), size = 3) +
+  fcast_trans <- melt(as.data.table(fcast_jitter), id.vars = "date") # original: without as.data.table 
+  fcast_trans <- as.data.frame(fcast_trans)
+  
+  # Check if 'date' column exists and is of Date type
+  if (!"date" %in% colnames(fcast_trans)) {
+    stop("Error: Column 'date' not found in fcast_trans. Check variable names.")
+  }
+  
+  if (!inherits(fcast_trans$date, "Date")) {
+    fcast_trans$date <- as.Date(fcast_trans$date)  # Convert to Date format
+  }
+  
+  plt <- ggplot(fcast_trans, aes(x=date, y = value, color=variable)) + 
+    geom_line(linewidth = 3) +
     geom_hline(yintercept=0.0, lty=4) +
-    # scale_color_paletteer_d("ggthemes::calc") +
-    scale_color_manual(values = c(RColorBrewer::brewer.pal(name="Dark2", n = 8), RColorBrewer::brewer.pal(name="Paired", n = 8))) +
-    scale_x_date(breaks = "3 months",
-                 date_labels=("%Y-%m")) +
+    scale_color_manual(values = c(RColorBrewer::brewer.pal(name="Dark2", n = 8), 
+                                  RColorBrewer::brewer.pal(name="Paired", n = 8))) +
+    scale_x_date(breaks = "3 months", date_labels= "%Y-%m" ) +
     scale_y_continuous(n.breaks = 8)
   
   # if (maxi >= 0 & mini <= 0) {
@@ -187,26 +197,24 @@ forecast.plot <- function(l, P=FALSE, series_name="Real GDP Growth (%qoq)", y_la
   #     geom_hline(yintercept=0.0, lty=4)
   # }
   
-  
   if (P==TRUE) { 
     plt <- plt + 
       geom_point(data=outturns_p, aes(x=ECO_RELEASE_DT, y=ACTUAL_RELEASE, color=period), size=5, shape=4, stroke = 3) +
       geom_point(data=outturns_f, aes(x=ECO_RELEASE_DT, y=ACTUAL_RELEASE, color=period), size=5, shape=16, stroke = 3) +
-      labs(title = paste(series_name, "- Evolution of Median Forecasts", sep=" "), 
-           subtitle = "Median forecast, preliminary print, final print",
+      labs(title = paste(series_name, "", sep=" "), 
+           subtitle = "Median forecast, preliminary and final ONS estimates",
            y = y_label,
-           caption = "Source: Bloomberg, Eisler Capital",
+           caption = "Source: Bloomberg",
            color = NULL)
   } else {
     plt <- plt + 
       geom_point(data=outturns_p, aes(x=ECO_RELEASE_DT, y=ACTUAL_RELEASE, color=period), size=5, shape=16, stroke = 3) +
-      labs(title = paste(series_name, "- Evolution of Median Forecasts", sep=" "), 
+      labs(title = paste(series_name, "", sep=" "), 
            subtitle = "Median forecast, final print",
            y = y_label,
-           caption = "Source: Bloomberg, Eisler Capital",
+           caption = "Source: Bloomberg",
            color = NULL)
   }
-  # print(plt)
   
   # Save graph in output folder
   ggsave(paste("output/", file_name, "_", substr(start_year,3,4), ".png", sep=""), 
@@ -215,6 +223,9 @@ forecast.plot <- function(l, P=FALSE, series_name="Real GDP Growth (%qoq)", y_la
          width = 8+3*(year(Sys.Date()) - as.numeric(start_year)), 
          height = 4+2*(year(Sys.Date()) - as.numeric(start_year)), 
          dpi = 140-30*(year(Sys.Date()) - as.numeric(start_year)), units = "in", device='png')
+  
+  return(plt)
+  
 }
 
 

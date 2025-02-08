@@ -1,15 +1,15 @@
 # Plot GBP Asset Prices ; 5 days around Trss mini-Budget and Reeves
 
 
-blpConnect()
 # SETTINGS
 date.start.truss     <- '2022-09-22' # 2022-09-23
-date.start.reeves    <- '2024-10-29' # 2024-10-30
+date.start.reeves    <- '2025-01-06' # 2024-10-30
 
 tickers <- c('BPSWS2 BGN Curncy', 'GTGBP10YR Corp', # 'GTGBP30YR Corp',
-             'GBPUSD Curncy' #,  'UKGGBE05 Index'
+             'GBPUSD Curncy' ,  'UKGGBE05 Index'
              )
-labels <-  c('2y swap', '10y Gilt', '30y Gilt', 'GBPUSD', '5y breakeven Infl')
+labels <-  c('2y swap', '10y Gilt', #'30y Gilt', 
+             'GBPUSD', '5y breakeven Infl')
 
 df.truss  <- bdh(tickers, "PX_LAST", start.date = as.Date(date.start.truss), end.date = as.Date(date.start.truss) + 15) # 15day window
 df.reeves <- bdh(tickers, "PX_LAST", start.date = as.Date(date.start.reeves), end.date = as.Date(date.start.reeves) + 15)
@@ -48,10 +48,10 @@ b.plot <- ggplot(
   df$reeves, aes(x=date, y=value, color=factor(variable))) + 
   geom_line(linewidth=1.5) + 
   geom_point(size=1.5) +
-  geom_vline(xintercept = as.Date('2024-10-30'), lty=4, size=2, color = 'red') +
+  geom_vline(xintercept = as.Date('2025-01-07'), lty=4, size=2, color = 'red') +
   theme(legend.position = "none") +
   facet_wrap(~variable, scales = "free_y") + 
-  labs(title = "Reeves, Autumn Budget (2024.10.30)")
+  labs(title = "January episode, (2025.01.07)")
 
 a.plot / b.plot
 

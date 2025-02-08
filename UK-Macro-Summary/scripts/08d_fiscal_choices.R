@@ -20,4 +20,3 @@ responses.scatter <- ggplot(responses, aes(y=discretionary_package,x = underlyin
        y = "Discretaionary fiscal change (% GDP)",
        caption = "Source: OBR")
 #responses.scatter
-

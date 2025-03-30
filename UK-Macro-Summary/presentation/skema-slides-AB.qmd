@@ -1,0 +1,205 @@
+---
+title: |
+   | UK macro policy outlook - a case study
+author: Andrew Benito
+date: 'March 18, 2025'
+#date: '`r format(Sys.Date(), "%B %d, %Y")`'
+institute: 
+#  - "Eisler Capital"
+  - "Skema Business School"
+date-format: long
+execute: 
+  echo: false
+  output: asis
+format: 
+  beamer: 
+    navigation: horizontal
+    header-includes: |
+       \setbeamertemplate{navigation symbols}{}
+       \setbeamertemplate{footline}[page number]
+       \usepackage{booktabs}
+---
+
+```{r, include=FALSE, echo=FALSE}
+# Packages----
+rm(list = ls())
+lapply(c('knitr', 'here', 'tidyverse', 'openxlsx', 'tsbox', 'Rblpapi', 'data.table', 'ggtext',
+         'MacrobondAPI', 'ggsci', 'patchwork', 'ggbeeswarm', 'sysfonts', 'readxl', 'gt', 'gtExtras',
+         'kableExtra', 'showtext', 'hrbrthemes', 'janitor', 'ggrepel', 'glue', 'MASS',
+         'hablar', 'Rblpapi', 'ggbeeswarm'),
+       require, character.only = TRUE)
+knitr::opts_knit$set(root.dir = here::here())
+import_roboto_condensed()
+blpConnect() 
+options(warn = -1)
+
+# Source Functions
+source(here('functions','chartFormat.R'))
+source(here('functions','functions.R'))
+
+# Options----
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE,
+	fig.width=22, fig.height=10, # 20 x 10
+	dev = "cairo_pdf"
+)
+
+```
+
+
+# Main messages
+
+- **Markets** \textcolor{red}{risk premium episodes} suggest the UK's fiscal buffer is too small.
+- **Macro** (i) a need to restore fiscal space (ii) the UK output gap is still positive (iii) recent falls in employment partly come from the supply-side. 
+
+A better \textcolor{blue}{policy mix} would incorporate add'l \textcolor{blue}{fiscal consolidation}. If spare capacity opens up, \textcolor{blue}{monetary policy} can ease by more. But the current policy mix, with too little near-term fiscal adjustment and too much monetary easing risks a positive output gap, inflation persistence and recurring risk premium episodes. 
+ 
+
+# A public debt ratchet and an expanded BoE balance sheet
+
+```{r, include=TRUE}
+# Public sector debt
+source(here('scripts','01_fiscal_main.R'))
+source(here('scripts','01_BoE_settings.R'))
+
+debt.lt.plot1970 + p1
+
+```
+
+- Debt to GDP three times its average in MPC's first decade.  
+- QE shortened the effective maturity of public liabilities.  
+
+# r\uparrow, g\downarrow. (r - g)\uparrow\uparrow
+
+```{r}
+# Evolving int rate costs and productivity
+source(here('scripts','02_historical_forecasts.R'))
+interest.plot + prody.plot
+
+```
+
+- +50bp on market interest rates now adds £7bn to public borrowing in 5Y.
+- Fiscal and Monetary policies are not well co-ordinated when set with different views about future productivity growth. 
+
+# Stabilising debt. Fiscal space?
+
+```{r}
+source(here('scripts','03_debt_stab_pri_bal.R'))
+gt.dat
+
+```
+
+# Delayed timing of fiscal consolidation
+
+```{r}
+# created and calc in 08e_historical_forecasts.R
+pb.plot + pb.plot.latest
+
+```
+- Even excl. 2020/21, 't+4' forecast error on the OBR's primary balance forecast averages \textcolor{red}{-2.7pp}.
+
+
+# Market expectations of 'r'   
+
+```{r, include=TRUE}
+source(here('scripts','04_OIS_curves.R'))
+ois1 
+
+```
+- Hard-to-learn medium-term features, eg r* and trend productivity growth lead to serially-correlated revisions (Leland _et al_, 2024).   
+
+
+# Estimates of neutral rates drift higher
+
+```{r}
+source(here('scripts','05_maps_rstar.R'))
+boxplot
+ggsave(here::here('output', 'maps-r-star.png'), plot = maps.r.plot, width = 9, height = 5, dpi = 110, units = "in", device='png')
+
+```
+
+- If the output gap > 0, and disinflation is stalling, 'r' is closer to 'r*' than previously thought. 
+
+
+# y* may be lower than thought, incl on U*\uparrow
+
+```{r, include=TRUE, echo=FALSE, message=FALSE}
+source(here('scripts','06_create_data_output_gap.R'))
+source(here('scripts','06_create_uk_beveridge.R'))
+og.plot + beveridge.plot
+
+```
+
+- Latest U/V curve suggests an outward shift in $U^*$ vs. pre-Covid. Sticky wage growth another symptom.
+
+
+# The past pattern of BoE forecast errors
+
+```{r}
+source(here('scripts','07_BoE_forecasts.R'))
+p3+p4+p5
+
+```
+- Pattern points to repeated, negative supply shocks under-estimated by BoE. (CPI: higher-than-expected; U: lower-than-expected; GDP: unbiased).
+
+
+# Bouts of Sterling risk premium
+
+```{r}
+source(here('scripts','08_asset_prices.R'))
+correl.plot
+
+```
+
+- Instability reflects changeable roles for different shocks.  
+- \textcolor{blue}{Demand} news pushes Yields and Currency in same direction ($\rho>0$). \textcolor{red}{Risk premium} news pushes them in opposing directions ($\rho<0$).  
+- Cx Reeves January episode a much smaller and more temporary bout of risk premium than Truss mini-Budget. 
+
+
+<!-- # Quantifying the risk premium effect -->
+
+<!-- <!-- ```{r} --> -->
+<!-- <!-- 3-variable SVAR --> -->
+
+<!-- <!-- ``` --> -->
+
+
+<!-- - Regardless of the precise source of the shock, the fiscal buffer is too small.   -->
+
+
+# Risk premiums complicate policy transmission + 'predictable' MPC Comms 
+
+```{r}
+source(here('scripts','09_truss_january.R'))
+a.plot + b.plot
+
+```
+
+# Are Dovish MPC Comms becoming less credible?
+
+```{r}
+source(here('scripts','10_mpc_asset_reactions.R'))
+mpc.20y + mpc.infl5
+
+```
+
+- Lower 1y OIS on MPC days as likely to push up on Gilt yields, and more so than before the mini-Budget.
+
+# The fiscal reaction. Fiscal fatigue?   
+
+```{r}
+source(here('scripts','11_fiscal_choices.R'))
+responses.scatter + bohn.plot
+
+```
+- Fiscal policy tightened at 2 of 21 fiscal events since 2015.  
+
+
+# Conclusions
+
+- **Markets** \textcolor{red}{risk premium episodes} suggest the UK's fiscal buffer is too small.
+- **Macro** (i) a need to restore fiscal space (ii) the UK output gap is still positive (iii) recent falls in employment partly come from the supply-side. 
+
+A better \textcolor{blue}{policy mix} would incorporate add'l \textcolor{blue}{fiscal consolidation}. If spare capacity opens up, \textcolor{blue}{monetary policy} can ease by more. But the current policy mix, with too little near-term fiscal adjustment and too much monetary easing risks a positive output gap, inflation persistence and recurring risk premium episodes. 

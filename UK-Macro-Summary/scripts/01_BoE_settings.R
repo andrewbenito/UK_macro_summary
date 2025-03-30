@@ -37,10 +37,6 @@ p1 <- ggplot(dat, aes(x = date)) +
                "QE4" = "#CD534C99", "QE5" = "#7AA6DC99"),
     name = NULL
   ) +
-  # geom_vline(xintercept = as.Date("2020-11-01"), lty=4) +
-  # annotate("text", x=as.Date("2020-11-01"), y = 5, 
-  #          label = "MPC: £150bn QE, 2020-11", 
-  #          angle=0, vjust=-0.1,  color = "navy", size=12) +
   scale_y_continuous(
     name = "Bank Rate (%)",
     sec.axis = sec_axis(~ .*100, name = "Gilts (£bn)")

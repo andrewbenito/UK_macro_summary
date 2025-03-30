@@ -26,10 +26,10 @@ Budget.match  <- "matching_measures_obr_forecast_history.xlsx"
 # Budgets
 #+++++++++
 Budget.match <- read_excel(here('inputs', Budget.match),
-                           sheet = "Sheet1", skip = 1) %>% data.table(.) %>% select(1:5) %>%
+                           sheet = "Sheet1", skip = 1) %>% data.table(.) %>% dplyr::select(1:5) %>%
   mutate(official_forecast = as.Date(paste(official_forecast, "01"), format = "%B %Y %d"),
          fiscal_event_date = as.Date(fiscal_event_date) )
-Budget.dates <- Budget.match |> select(fiscal_event_date)
+Budget.dates <- Budget.match |> dplyr::select(fiscal_event_date)
 
 # Load OBR Datasets: Databank (incl Forecasts) 
 #++++++++++++++++++++++++++++++++++++++++++++++
@@ -110,7 +110,7 @@ clean.data <- function(data, yearcol, nrowtopdelete=0, nrowbottomdel=0, ndropcol
     data <- tail(data, -nrowtopdelete)
   }
   if (ndropcol >0) {
-    data <- select(data, -ndropcol)
+    data <- dplyr::select(data, -ndropcol)
   }
   data <- data |> type_convert()
   data <- data.frame(lapply(data, function(x) if(is.numeric(x)) round(x,3) else x))
@@ -203,7 +203,7 @@ measures.long <- measures |>
 
 # merge and scale measures by nominal GDP
 measures.long <- left_join(measures.long, ngdp, by = "year", relationship = "many-to-many") |> 
-  select(-c(stat_id, fiscal_event.y))
+  dplyr::select(-c(stat_id, fiscal_event.y))
 
 # 2. Into Budget Measures data, [measures] merge Budget event data
 measures <- left_join(measures, Budget.match, 
